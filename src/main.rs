@@ -16,10 +16,16 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
 
-    let content = fs::read_to_string("response.html").unwrap();
+    let get = b"GET / HTTP/1.1\r\n";
 
-    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", content);
+    if buffer.starts_with(get) {
+        let content = fs::read_to_string("response.html").unwrap();
 
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
+        let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", content);
+
+        stream.write(response.as_bytes()).unwrap();
+        stream.flush().unwrap();
+    } else {
+        println!("not GET request");
+    }
 }
