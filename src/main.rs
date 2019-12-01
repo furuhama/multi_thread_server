@@ -8,6 +8,7 @@ use std::time::Duration;
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
     let pool = ThreadPool::new(4);
+    println!("Initializing server.");
 
     for stream in listener.incoming().take(4) {
         let stream = stream.unwrap();
