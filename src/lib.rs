@@ -25,9 +25,7 @@ impl ThreadPool {
         }
     }
 
-    pub fn execute<F>(&self, f: F)
-        where F: FnOnce() + Send + 'static
-    {
+    pub fn execute(&self, f: impl FnOnce() + Send + 'static) {
         let job = Box::new(f);
 
         self.sender.send(Message::NewJob(job)).unwrap();
@@ -88,7 +86,7 @@ impl Worker {
     }
 }
 
-type Job = Box<FnBox + Send + 'static>;
+type Job = Box<dyn FnBox + Send + 'static>;
 
 trait FnBox {
     fn call_box(self: Box<Self>);
